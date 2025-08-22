@@ -1,10 +1,10 @@
-import { Button } from './Button';
+import { ConversionButton } from './ConversionButton';
 import { MemoryRouter } from 'react-router-dom';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
-const meta: Meta<typeof Button> = {
-  title: 'Component/Button',
-  component: Button,
+const meta: Meta<typeof ConversionButton> = {
+  title: 'Component/ConversionButton',
+  component: ConversionButton,
   decorators: [
     (Story) => (
       <MemoryRouter initialEntries={['/']}>
@@ -15,10 +15,9 @@ const meta: Meta<typeof Button> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Button>;
+type Story = StoryObj<typeof ConversionButton>;
 
 export const Primary: Story = {
   args: {
-    label: '수기파일 업로드',
   },
 };
