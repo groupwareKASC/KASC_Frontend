@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-interface DownloadModalProps {}
+interface DownloadModalProps {
+  open: boolean;
+  onClose: () => void;
+}
 
-export const DownloadModal: React.FC<DownloadModalProps> = () => {
-  const [open, setOpen] = useState(true);
-
+export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose }) => {
+  const navigate = useNavigate();
   if(!open) return null;
 
   return (
@@ -13,8 +16,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = () => {
       <ModalContainer>
         <Title>다운로드 완료</Title>
         <Content>처음으로 돌아가시겠습니까?</Content>
-        <CancelButton onClick={() => setOpen(false)}>취소</CancelButton>
-        <HomeButton onClick={() => window.location.reload()}>처음으로</HomeButton>
+        <CancelButton onClick={onClose}>취소</CancelButton>
+        <HomeButton onClick={() => navigate('/')}>처음으로</HomeButton>
       </ModalContainer>
     </Overlay>
   );

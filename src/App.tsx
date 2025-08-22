@@ -1,22 +1,40 @@
-import React from "react";
-import { Routes, Route, Link } from "react-router-dom";
-
-import Attendence from "./pages/Attendence";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Splash } from "./pages/Splash";
+import { Attendence } from "./pages/Attendence";
 
 function App() {
+  const location = useLocation();
+  
   return (
-    <div className="App">
-      <nav>
-        <p>
-          <Link to="/">출석 페이지</Link>
-        </p>
-      </nav>
-      <main>
-        <Routes>
-          <Route path="/" element={<Attendence />} />
-        </Routes>
-      </main>
-    </div>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/"
+          element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Splash />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/Attendence"
+          element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Attendence />
+            </motion.div>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
   );
 }
 
