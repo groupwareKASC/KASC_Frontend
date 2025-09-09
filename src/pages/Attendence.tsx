@@ -7,19 +7,24 @@ import { RadioField } from '../components/RadioField/RadioField';
 import { LoadingModal } from '../components/LoadingModal/LoadingModal';
 import { DownloadModal } from '../components/DownloadModal/DownloadModal';
 import { PwdModal } from '../components/PwdModal/PwdModal';
+import { P } from 'framer-motion/dist/types.d-Cjd591yU';
 
 export const Attendence = () : ReactElement => {
   // 라디오 버튼 상태관리
   const [selected, setSelected] = useState('mismatch');
+
   // 파일 업로드 상태관리 
   const [manualUpload, setManualUpload] = useState(false);
   const [erpUpload, setErpUpload] = useState(false);
+
   // 모달 상태관리
   const [loadingModal, setLoadingModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
-  const [passwordModal, setPasswordModal] = useState(false);
-  // 엑셀 비밀번호 상태관리
-  const [excelPassword, setExcelPassword] = useState<string>("");
+
+  // 엑셀 비밀번호 상태관리 (수기, erp)
+  const [passwordModal, setPasswordModal] = useState<"manual" | "erp" | null>(null);
+  const [manualExcelPassword, setManualExcelPassword] = useState<string>("");
+  const [erpExcelPassword, setErpExcelPassword] = useState<string>("");
 
   const allUpload = manualUpload && erpUpload;
 
@@ -42,10 +47,30 @@ export const Attendence = () : ReactElement => {
 
   // 비밀번호 저장 처리
   const handleSavePassword = (password: string) => {
-    setExcelPassword(password);
-    setPasswordModal(false);
-    console.log("입력된 비밀번호: ", password);
+    if(passwordModal === "manual") {
+      setManualExcelPassword(password);
+      console.log("수기 엑셀 파일 비밀번호: ", password);
+    } else if (passwordModal === "erp") {
+      setErpExcelPassword(password);
+      console.log("erp 엑셀 파일 비밀번호: ", password);
+    }
+    setPasswordModal(null); // 모달 close
   }
+
+  // 파일 업로드
+  const handleManualUpload = (uploaded: boolean) => {
+    setManualUpload(uploaded);
+    if (uploaded) {
+      setPasswordModal("manual");
+    }
+  };
+
+  const handleErpUpload = (uploaded: boolean) => {
+    setErpUpload(uploaded);
+    if(uploaded) {
+      setPasswordModal("erp");
+    }
+  };
 
   return (
     <Wrapper>
@@ -71,8 +96,8 @@ export const Attendence = () : ReactElement => {
         </OptionWrapper>
 
         <ButtonWrapper>
-          <Button label='수기파일 업로드' onFileSelect={setManualUpload}/>
-          <Button label='ERP파일 업로드' onFileSelect={setErpUpload}/>
+          <Button label='수기파일 업로드' onFileSelect={handleManualUpload}/>
+          <Button label='ERP파일 업로드' onFileSelect={handleErpUpload}/>
         </ButtonWrapper>
 
         {allUpload && (
@@ -82,18 +107,17 @@ export const Attendence = () : ReactElement => {
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
         {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} />}
+        {passwordModal && (
+          <PwdModal 
+            open={!!passwordModal} 
+            onClose={() => setPasswordModal(null)}
+            onSave={handleSavePassword} 
+          />
+        )}
       </ContentWrapper>
     </Wrapper>
   )
 };
-
-// {passwordModal  && (
-//   <PwdModal 
-//     open={passwordModal} 
-//     onClose={() => setPasswordModal(false)}
-//     onSave={handleSavePassword} 
-//   />
-// )}
 
 const Wrapper = styled.div`
   position: relative;
