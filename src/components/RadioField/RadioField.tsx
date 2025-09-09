@@ -1,5 +1,5 @@
+// 라디오 필드 컴포넌트
 import React from 'react';
-
 interface RadioFieldProps {
   label: string;
   checked: boolean;
@@ -71,7 +71,7 @@ export const RadioField = ({
       </span>
       <span
         style={{
-          color: checked ? '#202020' : '#D0D0D0',
+          color: checked ? '#202020' : '#a0a0a0',
           fontFamily: 'KoPubWorld_m',
           fontSize: '1.7rem',
           fontWeight: 500,

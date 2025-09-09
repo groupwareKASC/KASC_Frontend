@@ -1,6 +1,6 @@
+// 로딩 모달 컴포넌트
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { X } from '@mynaui/icons-react';
 
 export interface LoadingModalProps {}
 
@@ -30,9 +30,6 @@ export const LoadingModal: React.FC<LoadingModalProps> = () => {
   return (
     <Overlay>
       <ModalContainer>
-        <CloseButton onClick={() => setOpen(false)}>
-          <X size={25} color="#000"/>
-        </CloseButton>
         <ImageContainer src={frames[idx]} alt="loading" />
         <ContentContainer>잠시만 기다려주세요...</ContentContainer>
       </ModalContainer>
@@ -67,16 +64,6 @@ const ModalContainer = styled.div`
   padding: 1rem;
   gap: 5px;
 `;
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-`;
-
 
 const ImageContainer = styled.img`
   width: 170px;

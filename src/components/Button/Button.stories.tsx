@@ -20,6 +20,5 @@ type Story = StoryObj<typeof Button>;
 export const Primary: Story = {
   args: {
     label: '수기파일 업로드',
-    path: '/',
   },
 };

@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+// 다운로드 모달 컴포넌트
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-interface DownloadModalProps {}
+interface DownloadModalProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+}
 
-export const DownloadModal: React.FC<DownloadModalProps> = () => {
-  const [open, setOpen] = useState(true);
-
+export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, title }) => {
+  const navigate = useNavigate();
   if(!open) return null;
 
   return (
     <Overlay>
       <ModalContainer>
-        <Title>다운로드 완료</Title>
+        <Title>{title}</Title>
         <Content>처음으로 돌아가시겠습니까?</Content>
-        <CancelButton onClick={() => setOpen(false)}>취소</CancelButton>
-        <HomeButton onClick={() => window.location.reload()}>처음으로</HomeButton>
+        <CancelButton onClick={onClose}>취소</CancelButton>
+        <HomeButton onClick={() => navigate('/')}>처음으로</HomeButton>
       </ModalContainer>
     </Overlay>
   );
@@ -76,7 +81,7 @@ const CancelButton = styled.button`
     height: 2.75rem;
     flex-shrink: 0;
     border-radius: 0.9375rem;
-    border: 1px solid #000;
+    border: 1px solid rgba(0,0,0,0.4);
     background: var(--White-1, #FFF);
     font-size: 1rem;
     font-style: normal;

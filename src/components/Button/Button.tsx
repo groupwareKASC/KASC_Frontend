@@ -1,80 +1,131 @@
-import React, {useState} from "react";
+// 파일 업로드 버튼 컴포넌트
+import React, {useState, useRef} from "react";
 import styled, { css } from "styled-components";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Edit } from "@mynaui/icons-react";
 import "../../App.css";
-
 interface ButtonProps {
     label: string;
-    path?: string; 
+    onFileSelect?: (isSelected: boolean) => void; 
 };
 
-export const Button = ({ label, path }: ButtonProps) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [isHovered, setHovered] = useState(false);
+export const Button = ({ label, onFileSelect  }: ButtonProps) => {
+    const [fileSelected, setFileSelected] = useState(false);
+    const [fileName, setFileName] = useState("");
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const isActive = path === location.pathname; 
-
+    // 버튼 클릭 시 숨겨진 파일 입력창 열기
     const handleClick = () => {
-        if (path) navigate(path);
+        fileInputRef.current?.click();
+    };
+
+    // 파일이 선택되었다면 상태변경 (파일명 저장)
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+          setFileSelected(true);
+          setFileName(e.target.files[0].name);
+          onFileSelect?.(true);
+        }
     };
 
     return(
         <>
-        <Btn 
-            onClick={handleClick} 
-            $active={isActive}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-        >
-            {label}
-        </Btn>
-        <Text style={{ color: isHovered ? "transparent" : "#F00" }}>
-            파일이 업로드되지 않았습니다.
+        <BtnWrapper>
+            <Btn 
+                onClick={handleClick} 
+                $active={fileSelected}
+            >
+                <Label $isFile={fileSelected}>{fileSelected ? fileName : label}</Label>
+            </Btn>
+        </BtnWrapper>
+
+        {/* 숨겨진 파일 입력창 열기 */}
+        <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+        />
+
+        <Text $isFile={fileSelected}>
+        파일이 업로드되지 않았습니다.
         </Text>
         </>
     );
 };
 
+const BtnWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2vw; 
+`;
+
 const Btn = styled.button<{ $active?: boolean }>`
-  /* width: 29.6vw; */
-  width: 35.5rem;
-  height: 6rem;
+  width: 57.6vw;               
+  max-width: 45rem;       
+  min-width: 18rem;         
+  
+  height: 16vh;              
+  max-height: 8rem;          
+  min-height: 3rem;        
+
   flex-shrink: 0;
   color: #F8F8F8;
   font-family: "KoPubWorld_b";
-  font-size: 2rem;
+  font-size: clamp(2rem, 1.5vw + 1rem, 2.5rem);         
   font-style: normal;
   letter-spacing: 0.5rem;
   line-height: normal;
+
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border: none;
-  border-radius: 0.9375rem;
+  border-radius: 0.5rem;
   background: var(--Blue-3, #182E64);
+  white-space: nowrap;       
+  overflow: hidden;       
+  text-overflow: ellipsis;      
+  word-break: normal;
+  padding: 0 1.1rem;
+  transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease;
+
+  ${({ $active }) =>
+    $active &&
+    css`
+      background: var(--Blue-1, #9DBEE1);
+      color: #F8F8F8;
+    `}
 
   &:hover {
-    background-color: #F6F7F9;
+    background-color: #9DBEE1;
     color: #F8F8F8;
-
-    ${({ $active }) =>
-      $active &&
-      css`
-        background: var(--Blue-1, #9DBEE1);
-        color: #F8F8F8;
-      `}
   }
 `;
 
-const Text = styled.div<{ $active?: boolean }>`
-    margin-top: 0.69rem;
-    margin-left: 1rem;
-    font-family: "KoPubWorld_l";
-    font-size: 1.125rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: 0.1125rem;
+const Label = styled.span<{ $isFile?: boolean }>`
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex: 1; 
+  font-size: ${({ $isFile }) =>
+    $isFile
+      ? "clamp(1.5rem, 1vw + 1rem, 1.8rem)" 
+      : "clamp(2rem, 1vw + 1.2rem, 2.3rem)"}; 
+  letter-spacing: ${({ $isFile }) => ($isFile ? "0.1rem" : "0.3rem")};
+`;
+
+const Text = styled.div<{ $isFile?: boolean }>`
+  margin-top: -0.5rem;
+  margin-left: 1vw; 
+  font-family: "KoPubWorld_l";
+  font-size: clamp(1.125rem, 0.5vw + 0.8rem, 1.3rem);
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.1rem;
+  color: #f00;
+  opacity: ${({ $isFile }) => ($isFile ? 0 : 1)};   
+  margin-bottom: ${({ $isFile }) => ($isFile ? "-1rem" : "1rem")};
+  transition: opacity 0.3s ease;
 `;
