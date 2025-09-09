@@ -7,7 +7,6 @@ import { RadioField } from '../components/RadioField/RadioField';
 import { LoadingModal } from '../components/LoadingModal/LoadingModal';
 import { DownloadModal } from '../components/DownloadModal/DownloadModal';
 import { PwdModal } from '../components/PwdModal/PwdModal';
-import { P } from 'framer-motion/dist/types.d-Cjd591yU';
 
 export const Attendence = () : ReactElement => {
   // 라디오 버튼 상태관리
@@ -106,7 +105,7 @@ export const Attendence = () : ReactElement => {
 
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
-        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} />}
+        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title="다운로드 완료"/>}
         {passwordModal && (
           <PwdModal 
             open={!!passwordModal} 
@@ -131,13 +130,19 @@ const Wrapper = styled.div`
 
 const SideLogo = styled.img`
   position: absolute;
-  right: 3.44rem;
-  top: 2.31rem;
+  width: 12vw;
+  max-width: 150px;
+  min-width: 100px;
+  right: 3vw; 
+  top: 4vh; 
   z-index: 1;
 `;
 
 const BackLogo = styled.img`
   position: absolute;
+  width: 55vw;
+  max-width: 700px;
+  min-width: 400px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

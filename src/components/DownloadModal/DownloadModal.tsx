@@ -6,16 +6,17 @@ import styled from 'styled-components';
 interface DownloadModalProps {
   open: boolean;
   onClose: () => void;
+  title: string;
 }
 
-export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose }) => {
+export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, title }) => {
   const navigate = useNavigate();
   if(!open) return null;
 
   return (
     <Overlay>
       <ModalContainer>
-        <Title>다운로드 완료</Title>
+        <Title>{title}</Title>
         <Content>처음으로 돌아가시겠습니까?</Content>
         <CancelButton onClick={onClose}>취소</CancelButton>
         <HomeButton onClick={() => navigate('/')}>처음으로</HomeButton>
