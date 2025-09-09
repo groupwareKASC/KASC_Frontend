@@ -25,12 +25,18 @@ const fadeInUp = keyframes`
 `;
 
 const Btn = styled.button<{ $active?: boolean }>`
-  width: 35.5rem;
-  height: 6rem;
+  width: 57.6vw;               
+  max-width: 45rem;       
+  min-width: 18rem;  
+
+  height: 16vh;              
+  max-height: 8rem;          
+  min-height: 3rem;     
+
   flex-shrink: 0;
   color: #F8F8F8;
   font-family: "KoPubWorld_b";
-  font-size: 2rem;
+  font-size: clamp(2rem, 1.5vw + 1rem, 2.5rem);
   font-style: normal;
   letter-spacing: 0.5rem;
   line-height: normal;

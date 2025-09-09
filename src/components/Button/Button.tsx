@@ -36,15 +36,6 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
             >
                 <Label $isFile={fileSelected}>{fileSelected ? fileName : label}</Label>
             </Btn>
-            {/* {fileSelected && (
-                <Edit 
-                    onClick={handleClick} 
-                    size="4rem" 
-                    color="#182E64" 
-                    cursor="pointer" 
-                    strokeWidth={1.8}
-                />
-            )} */}
         </BtnWrapper>
 
         {/* 숨겨진 파일 입력창 열기 */}
@@ -65,19 +56,26 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
 const BtnWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem; 
+  gap: 2vw; 
 `;
 
 const Btn = styled.button<{ $active?: boolean }>`
-  width: 35.5rem;
-  height: 6rem;
+  width: 57.6vw;               
+  max-width: 45rem;       
+  min-width: 18rem;         
+  
+  height: 16vh;              
+  max-height: 8rem;          
+  min-height: 3rem;        
+
   flex-shrink: 0;
   color: #F8F8F8;
   font-family: "KoPubWorld_b";
-  font-size: 2rem;
+  font-size: clamp(2rem, 1.5vw + 1rem, 2.5rem);         
   font-style: normal;
   letter-spacing: 0.5rem;
   line-height: normal;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +88,6 @@ const Btn = styled.button<{ $active?: boolean }>`
   text-overflow: ellipsis;      
   word-break: normal;
   padding: 0 1.1rem;
-  /* 자연스럽게 변하도록 추가 */
   transition: background-color 0.4s ease, color 0.4s ease, transform 0.3s ease;
 
   ${({ $active }) =>
@@ -111,20 +108,23 @@ const Label = styled.span<{ $isFile?: boolean }>`
   text-overflow: ellipsis;
   overflow: hidden;
   flex: 1; 
-  font-size: ${({ $isFile }) => ($isFile ? "1.5rem" : "2rem")};
-  letter-spacing: ${({ $isFile }) => ($isFile ? "0.1rem" : "0.5rem")}
+  font-size: ${({ $isFile }) =>
+    $isFile
+      ? "clamp(1.5rem, 1vw + 1rem, 1.8rem)" 
+      : "clamp(2rem, 1vw + 1.2rem, 2.3rem)"}; 
+  letter-spacing: ${({ $isFile }) => ($isFile ? "0.1rem" : "0.3rem")};
 `;
 
 const Text = styled.div<{ $isFile?: boolean }>`
   margin-top: -0.5rem;
-  margin-left: 1rem;
+  margin-left: 1vw; 
   font-family: "KoPubWorld_l";
-  font-size: 1.125rem;
+  font-size: clamp(1.125rem, 0.5vw + 0.8rem, 1.3rem);
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-  letter-spacing: 0.1125rem;
-  color: #F00;
+  letter-spacing: 0.1rem;
+  color: #f00;
   opacity: ${({ $isFile }) => ($isFile ? 0 : 1)};   
   margin-bottom: ${({ $isFile }) => ($isFile ? "-1rem" : "1rem")};
   transition: opacity 0.3s ease;
