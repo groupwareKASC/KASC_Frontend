@@ -6,16 +6,20 @@ import { ConversionButton } from '../components/Button/ConversionButton';
 import { RadioField } from '../components/RadioField/RadioField';
 import { LoadingModal } from '../components/LoadingModal/LoadingModal';
 import { DownloadModal } from '../components/DownloadModal/DownloadModal';
+import { PwdModal } from '../components/PwdModal/PwdModal';
 
 export const Attendence = () : ReactElement => {
   // 라디오 버튼 상태관리
-  const [selected, setSelected] = useState('all');
+  const [selected, setSelected] = useState('mismatch');
   // 파일 업로드 상태관리 
   const [manualUpload, setManualUpload] = useState(false);
   const [erpUpload, setErpUpload] = useState(false);
   // 모달 상태관리
   const [loadingModal, setLoadingModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
+  const [passwordModal, setPasswordModal] = useState(false);
+  // 엑셀 비밀번호 상태관리
+  const [excelPassword, setExcelPassword] = useState<string>("");
 
   const allUpload = manualUpload && erpUpload;
 
@@ -31,10 +35,17 @@ export const Attendence = () : ReactElement => {
       const timer = setTimeout(() => {
         setLoadingModal(false);
         setDownloadModal(true);
-      }, 8000);
+      }, 3000);
       return() => clearTimeout(timer);
     }
   }, [loadingModal]);
+
+  // 비밀번호 저장 처리
+  const handleSavePassword = (password: string) => {
+    setExcelPassword(password);
+    setPasswordModal(false);
+    console.log("입력된 비밀번호: ", password);
+  }
 
   return (
     <Wrapper>
@@ -75,6 +86,14 @@ export const Attendence = () : ReactElement => {
     </Wrapper>
   )
 };
+
+// {passwordModal  && (
+//   <PwdModal 
+//     open={passwordModal} 
+//     onClose={() => setPasswordModal(false)}
+//     onSave={handleSavePassword} 
+//   />
+// )}
 
 const Wrapper = styled.div`
   position: relative;

@@ -1,3 +1,4 @@
+// 파일 업로드 버튼 컴포넌트
 import React, {useState, useRef} from "react";
 import styled, { css } from "styled-components";
 import { Edit } from "@mynaui/icons-react";
@@ -35,7 +36,7 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
             >
                 <Label $isFile={fileSelected}>{fileSelected ? fileName : label}</Label>
             </Btn>
-            {fileSelected && (
+            {/* {fileSelected && (
                 <Edit 
                     onClick={handleClick} 
                     size="4rem" 
@@ -43,7 +44,7 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
                     cursor="pointer" 
                     strokeWidth={1.8}
                 />
-            )}
+            )} */}
         </BtnWrapper>
 
         {/* 숨겨진 파일 입력창 열기 */}

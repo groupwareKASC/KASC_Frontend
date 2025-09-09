@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// 다운로드 모달 컴포넌트
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -79,7 +80,7 @@ const CancelButton = styled.button`
     height: 2.75rem;
     flex-shrink: 0;
     border-radius: 0.9375rem;
-    border: 1px solid #000;
+    border: 1px solid rgba(0,0,0,0.4);
     background: var(--White-1, #FFF);
     font-size: 1rem;
     font-style: normal;
