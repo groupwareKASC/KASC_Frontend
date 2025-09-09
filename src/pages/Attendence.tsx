@@ -7,6 +7,7 @@ import { RadioField } from '../components/RadioField/RadioField';
 import { LoadingModal } from '../components/LoadingModal/LoadingModal';
 import { DownloadModal } from '../components/DownloadModal/DownloadModal';
 import { PwdModal } from '../components/PwdModal/PwdModal';
+import { Buffer } from "buffer";
 
 export const Attendence = () : ReactElement => {
   // 라디오 버튼 상태관리
@@ -15,17 +16,21 @@ export const Attendence = () : ReactElement => {
   // 파일 업로드 상태관리 
   const [manualUpload, setManualUpload] = useState(false);
   const [erpUpload, setErpUpload] = useState(false);
+  const allUpload = manualUpload && erpUpload;
 
   // 모달 상태관리
   const [loadingModal, setLoadingModal] = useState(false);
   const [downloadModal, setDownloadModal] = useState(false);
+  const [downloadTitle, setDownloadTitle] = useState("다운로드 완료");
 
   // 엑셀 비밀번호 상태관리 (수기, erp)
   const [passwordModal, setPasswordModal] = useState<"manual" | "erp" | null>(null);
   const [manualExcelPassword, setManualExcelPassword] = useState<string>("");
   const [erpExcelPassword, setErpExcelPassword] = useState<string>("");
 
-  const allUpload = manualUpload && erpUpload;
+  // 올라간 파일들 관리
+  const [manualFile, setManualFile] = useState<File|null>(null);
+  const [erpFile, setErpFile] = useState<File|null>(null);
 
   // 옵션 리스트
   const options = [
@@ -53,22 +58,99 @@ export const Attendence = () : ReactElement => {
       setErpExcelPassword(password);
       console.log("erp 엑셀 파일 비밀번호: ", password);
     }
-    setPasswordModal(null); // 모달 close
+    setPasswordModal(null); 
   }
 
   // 파일 업로드
-  const handleManualUpload = (uploaded: boolean) => {
-    setManualUpload(uploaded);
-    if (uploaded) {
-      setPasswordModal("manual");
+  const handleManualUpload = (file: File | null) => {
+    setManualFile(file);
+    setManualUpload(!!file);     
+    if (file) setPasswordModal("manual");
+  };
+  
+  const handleErpUpload = (file: File | null) => {
+    setErpFile(file);
+    setErpUpload(!!file);         
+    if (file) setPasswordModal("erp");
+  };
+
+  // api 연동
+  const handleConversion = async() => {
+    if(!manualFile || !erpFile) {
+      alert("파일이 모두 업로드해주세요");
+      return;
+    }
+
+    setLoadingModal(true);
+
+    const formData = new FormData();
+    formData.append("manualExcel", manualFile);
+    formData.append("erpExcel", erpFile);
+
+    const returnType = selected === "all" ? 1 : 0;
+    formData.append("returnType", String(returnType));
+
+    formData.append(
+      "excelPassword",
+      JSON.stringify({
+        erpExcelPassword,
+        manualExcelPassword,
+      })
+    );
+
+    try{
+      const response = await fetch(
+        "http://localhost:18080/api/validations/only-back-test", 
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if(!response.ok) {
+        throw new Error(`응답값 상태 에러: ${response.status}`);
+      }
+
+      // 파일로 데이터 받기
+      const blob = await response.blob();
+
+      // 백엔드에서 보내준 파일명 추출 (%형태로 들어오기 때문에 디코딩해야 받아올 수 있음)
+      const disposition = response.headers.get("Content-Disposition");
+      let fileName = "근태검증자료.xlsx"; 
+      if (disposition) {
+        const fileNameStarMatch = disposition.match(/filename\*=UTF-8''([^;]+)/);
+        const fileNameMatch = disposition.match(/filename="?([^"]+)"?/);
+      
+        if (fileNameStarMatch) {
+          fileName = decodeURIComponent(fileNameStarMatch[1]);
+        } else if (fileNameMatch) {
+          fileName = decodeURIComponent(fileNameMatch[1]);
+        }
+      }
+
+      // 파일 다운로드 처리하기
+      await handleDownload(blob, fileName);
+
+      setLoadingModal(false);
+      setDownloadTitle("다운로드 완료");
+      setDownloadModal(true);
+    } catch(error) {
+      console.log("호출 오류: ", error);
+      setLoadingModal(false);
+      setDownloadTitle("다운로드 실패");
+      setDownloadModal(true);
     }
   };
 
-  const handleErpUpload = (uploaded: boolean) => {
-    setErpUpload(uploaded);
-    if(uploaded) {
-      setPasswordModal("erp");
-    }
+  // 다운로드 파일들 지정 폴더에 관리
+  const handleDownload = async (blob: Blob, fileName: string) => {
+    console.log("window.electron?", window.electron);
+    
+    const arrayBuffer = await blob.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+  
+    // Electron IPC 호출
+    window.electron.saveFile(buffer, fileName);
   };
 
   return (
@@ -100,12 +182,12 @@ export const Attendence = () : ReactElement => {
         </ButtonWrapper>
 
         {allUpload && (
-          <ConversionButton onClick={() => setLoadingModal(true)}/>
+          <ConversionButton onClick={handleConversion}/>
         )}
 
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
-        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title="다운로드 완료"/>}
+        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}
         {passwordModal && (
           <PwdModal 
             open={!!passwordModal} 
