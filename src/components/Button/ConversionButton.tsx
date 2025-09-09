@@ -1,3 +1,4 @@
+// 변환하기 버튼 컴포넌트
 import styled, { keyframes } from "styled-components";
 import "../../App.css";
 

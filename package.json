@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "근태 검증 프로그램",
   "main": "build/electron.js",
   "homepage": "./",
   "version": "0.1.0",

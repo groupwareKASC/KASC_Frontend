@@ -1,5 +1,5 @@
+// 라디오 필드 컴포넌트
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 interface RadioFieldProps {
   label: string;
   checked: boolean;
