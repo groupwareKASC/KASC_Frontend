@@ -1,11 +1,10 @@
 // 파일 업로드 버튼 컴포넌트
 import React, {useState, useRef} from "react";
 import styled, { css } from "styled-components";
-import { Edit } from "@mynaui/icons-react";
 import "../../App.css";
 interface ButtonProps {
     label: string;
-    onFileSelect?: (isSelected: boolean) => void; 
+    onFileSelect?: (file: File | null) => void;
 };
 
 export const Button = ({ label, onFileSelect  }: ButtonProps) => {
@@ -21,9 +20,10 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
     // 파일이 선택되었다면 상태변경 (파일명 저장)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
+          const file = e.target.files[0];
           setFileSelected(true);
-          setFileName(e.target.files[0].name);
-          onFileSelect?.(true);
+          setFileName(file.name);
+          onFileSelect?.(file);
         }
     };
 

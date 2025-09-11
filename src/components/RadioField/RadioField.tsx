@@ -60,7 +60,7 @@ export const RadioField = ({
               height: '1.125rem',
               background: 'var(--Blue-3, #182E64)',
               borderRadius: '50%',
-              border: '1.5px solid var(--Blue-3, #182E64);',
+              border: '1.5px solid #182E64',
               position: 'absolute',
               top: '50%',
               left: '50%',

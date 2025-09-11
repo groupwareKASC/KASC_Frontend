@@ -1,6 +1,7 @@
 // 다운로드 모달 컴포넌트
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { typography } from 'storybook/internal/theming';
 import styled from 'styled-components';
 
 interface DownloadModalProps {
@@ -13,13 +14,42 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, tit
   const navigate = useNavigate();
   if(!open) return null;
 
+  // DB 초기화 API 호출 함수
+  const truncateDB = async () => {
+    try{
+      const response = await fetch("http://localhost:18080/api/data/truncate", {
+        method: "POST",
+        headers: {
+          "accept": "*/*"
+        },
+        body: ""
+      });
+      if(!response.ok) throw new Error("DB 초기화 실패");
+      console.log("초기화 결과: ", await response.text());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // 취소 버튼
+  const handleCancel = async () => {
+    await truncateDB();
+    onClose();
+  };
+
+  // 처음으로 버튼 
+  const handleHome = async () => {
+    await truncateDB();
+    navigate('/');
+  };
+
   return (
     <Overlay>
       <ModalContainer>
         <Title>{title}</Title>
         <Content>처음으로 돌아가시겠습니까?</Content>
-        <CancelButton onClick={onClose}>취소</CancelButton>
-        <HomeButton onClick={() => navigate('/')}>처음으로</HomeButton>
+        <CancelButton onClick={handleCancel}>취소</CancelButton>
+        <HomeButton onClick={handleHome}>처음으로</HomeButton>
       </ModalContainer>
     </Overlay>
   );
