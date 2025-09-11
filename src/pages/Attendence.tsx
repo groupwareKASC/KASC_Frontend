@@ -115,18 +115,10 @@ export const Attendence = () : ReactElement => {
       const blob = await response.blob();
 
       // 백엔드에서 보내준 파일명 추출 (%형태로 들어오기 때문에 디코딩해야 받아올 수 있음)
-      const disposition = response.headers.get("Content-Disposition");
-      let fileName = "근태검증자료.xlsx"; 
-      if (disposition) {
-        const fileNameStarMatch = disposition.match(/filename\*=UTF-8''([^;]+)/);
-        const fileNameMatch = disposition.match(/filename="?([^"]+)"?/);
-      
-        if (fileNameStarMatch) {
-          fileName = decodeURIComponent(fileNameStarMatch[1]);
-        } else if (fileNameMatch) {
-          fileName = decodeURIComponent(fileNameMatch[1]);
-        }
-      }
+      const fileNameResponse = await fetch("http://localhost:18080/api/data/filename");
+      if(!fileNameResponse.ok) throw new Error("파일명 api 불러오기 실패");
+
+      const fileName = await fileNameResponse.text();
 
       // 파일 다운로드 처리하기
       await handleDownload(blob, fileName);
@@ -187,7 +179,7 @@ export const Attendence = () : ReactElement => {
 
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
-        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}
+{downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}        
         {passwordModal && (
           <PwdModal 
             open={!!passwordModal} 
