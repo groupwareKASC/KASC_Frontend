@@ -1,6 +1,6 @@
-import React, { useState, useEffect, type ReactElement } from 'react'
+// 근태 검증 메인 화면 
+import { useState, useEffect, type ReactElement } from 'react'
 import styled from 'styled-components'
-// 컴포넌트들 불러오기
 import { Button } from '../components/Button/Button';
 import { ConversionButton } from '../components/Button/ConversionButton';
 import { RadioField } from '../components/RadioField/RadioField';
@@ -28,7 +28,7 @@ export const Attendence = () : ReactElement => {
   const [manualExcelPassword, setManualExcelPassword] = useState<string>("");
   const [erpExcelPassword, setErpExcelPassword] = useState<string>("");
 
-  // 올라간 파일들 관리
+  // 올라간 파일들 상태관리
   const [manualFile, setManualFile] = useState<File|null>(null);
   const [erpFile, setErpFile] = useState<File|null>(null);
 
@@ -114,7 +114,7 @@ export const Attendence = () : ReactElement => {
       // 파일로 데이터 받기
       const blob = await response.blob();
 
-      // 백엔드에서 보내준 파일명 추출 (%형태로 들어오기 때문에 디코딩해야 받아올 수 있음)
+      // 백엔드에서 보내준 파일명 추출
       const fileNameResponse = await fetch("http://localhost:18080/api/data/filename");
       if(!fileNameResponse.ok) throw new Error("파일명 api 불러오기 실패");
 
@@ -179,7 +179,7 @@ export const Attendence = () : ReactElement => {
 
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
-{downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}        
+        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}        
         {passwordModal && (
           <PwdModal 
             open={!!passwordModal} 

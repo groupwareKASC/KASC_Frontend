@@ -37,7 +37,6 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
                 <Label $isFile={fileSelected}>{fileSelected ? fileName : label}</Label>
             </Btn>
         </BtnWrapper>
-
         {/* 숨겨진 파일 입력창 열기 */}
         <input
             type="file"
@@ -45,10 +44,7 @@ export const Button = ({ label, onFileSelect  }: ButtonProps) => {
             style={{ display: "none" }}
             onChange={handleFileChange}
         />
-
-        <Text $isFile={fileSelected}>
-        파일이 업로드되지 않았습니다.
-        </Text>
+        <Text $isFile={fileSelected}>파일이 업로드되지 않았습니다.</Text>
         </>
     );
 };

@@ -12,7 +12,6 @@ export const ConversionButton = ({onClick} : ConversionButtonProps) => {
     );
 };
 
-// 점점 나타나는 애니메이션 추가
 const fadeInUp = keyframes`
   from {
     opacity: 0;

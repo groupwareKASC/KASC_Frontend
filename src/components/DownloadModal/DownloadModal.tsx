@@ -1,7 +1,6 @@
-// 다운로드 모달 컴포넌트
+// 다운로드 완료 모달 컴포넌트
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { typography } from 'storybook/internal/theming';
 import styled from 'styled-components';
 
 interface DownloadModalProps {

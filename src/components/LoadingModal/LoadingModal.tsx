@@ -14,14 +14,13 @@ export const LoadingModal: React.FC<LoadingModalProps> = () => {
   const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(true);
 
-  // 이미지 애니메이션
+  // 8장의 이미지 돌아가도록 구현 
   useEffect(() => {
     let count = 0;
     const id = setInterval(() => {
       setIdx(count % frames.length);
       count++;
     }, 1000 / 8); 
-    // 속도 조정 (숫자가 낮아질수록 느려짐)
     return () => clearInterval(id);
   }, []);
 

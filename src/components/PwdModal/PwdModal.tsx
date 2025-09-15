@@ -17,7 +17,7 @@ export const PwdModal: React.FC<PwdModalProps> = ({ open, onClose, onSave }) => 
 
   if(!open) return null;
 
-  // 엑셀 비밀번호 받아오기
+  // 엑셀 비밀번호 받아오기 
   const handlePWDSave = () => {
     if (!password.trim()) {
         setError("비밀번호를 입력해주세요");
