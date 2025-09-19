@@ -1,16 +1,14 @@
 // 다운로드 완료 모달 컴포넌트
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface DownloadModalProps {
   open: boolean;
-  onClose: () => void;
   title: string;
+  message: string;
 }
 
-export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, title }) => {
-  const navigate = useNavigate();
+export const DownloadModal: React.FC<DownloadModalProps> = ({ open, title, message }) => {
   if(!open) return null;
 
   // DB 초기화 API 호출 함수
@@ -30,25 +28,18 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ open, onClose, tit
     }
   };
 
-  // 취소 버튼
-  const handleCancel = async () => {
-    await truncateDB();
-    onClose();
-  };
-
   // 처음으로 버튼 
   const handleHome = async () => {
     await truncateDB();
-    navigate('/');
+    window.location.reload();
   };
 
   return (
     <Overlay>
       <ModalContainer>
         <Title>{title}</Title>
-        <Content>처음으로 돌아가시겠습니까?</Content>
-        <CancelButton onClick={handleCancel}>취소</CancelButton>
-        <HomeButton onClick={handleHome}>처음으로</HomeButton>
+        <Content>{message || "save폴더에 저장되었습니다."}</Content>
+        <HomeButton onClick={handleHome}>확인</HomeButton>
       </ModalContainer>
     </Overlay>
   );
@@ -94,36 +85,12 @@ const Content = styled.div`
   position: absolute;
   color: #000;
   font-family: KoPubWorld_r;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-style: normal;
   font-weight: 300;
   line-height: normal;
   top: 5.25rem;
   left: 1.56rem;
-`;
-
-const CancelButton = styled.button`
-    position: absolute;
-    font-family: KoPubWorld_m;
-    cursor: pointer;
-    width: 5.2rem;
-    height: 2.75rem;
-    flex-shrink: 0;
-    border-radius: 0.9375rem;
-    border: 1px solid rgba(0,0,0,0.4);
-    background: var(--White-1, #FFF);
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    letter-spacing: 0.1rem;
-    top: 8.69rem;
-    left: 11.44rem;
-
-    &:hover {
-      background-color: #eeeeee;
-      border: 1px solid #949494;
-    }
 `;
 
 const HomeButton = styled.button`

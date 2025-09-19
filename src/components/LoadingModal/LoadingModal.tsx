@@ -7,7 +7,7 @@ export interface LoadingModalProps {}
 // 큐리 이미지 8개를 배열로 저장 
 const frames = Array.from(
   { length: 8 },
-  (_, i) => `/images/curi/${String(i + 1).padStart(2, '0')}.png`
+  (_, i) => `./images/curi/${String(i + 1).padStart(2, '0')}.png`
 );
 
 export const LoadingModal: React.FC<LoadingModalProps> = () => {

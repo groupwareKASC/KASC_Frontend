@@ -1,4 +1,5 @@
 // 변환하기 버튼 컴포넌트
+import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import "../../App.css";
 
@@ -7,8 +8,18 @@ interface ConversionButtonProps {
 }
 
 export const ConversionButton = ({onClick} : ConversionButtonProps) => {
+    // 클릭 횟수 제한을 위한 상태관리
+    const [clicked, setClicked] = useState(false);
+
+    // 이미 한 번 클릭했다면, 다음 클릭은 무시 
+    const handleOneClick = () => {
+      if(clicked) return;
+      setClicked(true);
+      onClick?.();
+    };
+
     return(
-        <Btn onClick={onClick}>변환하기</Btn>
+        <Btn onClick={handleOneClick} disabled={clicked}>변환하기</Btn>
     );
 };
 

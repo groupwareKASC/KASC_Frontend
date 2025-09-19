@@ -16,7 +16,7 @@ export const Splash = (): ReactElement => {
 
   return (
     <SplashWrapper>
-      <Logo src="/images/logo/logo_back.svg" alt="logo_back" />
+      <Logo src={`./images/logo/logo_back.svg`} alt="logo_back" />
     </SplashWrapper>
   );
 };
@@ -48,7 +48,7 @@ const SplashWrapper = styled.div`
 
 const Logo = styled.img`
   width: 55vw;
-  max-width: 700px;
+  max-width: 690px;
   min-width: 400px;
   animation: ${fadeInScale} 1.5s ease-out 0.5s both;
 `;

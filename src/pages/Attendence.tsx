@@ -32,9 +32,12 @@ export const Attendence = () : ReactElement => {
   const [manualFile, setManualFile] = useState<File|null>(null);
   const [erpFile, setErpFile] = useState<File|null>(null);
 
+  // 다운로드 실패 메시지 
+  const [downloadMessage, setDownloadMessage] = useState<string>("처음으로 돌아가시겠습니까?");
+
   // 옵션 리스트
   const options = [
-    {label: '전체', value: 'all'},
+    {label: '전체 (일치+불일치)', value: 'all'},
     {label: '불일치', value: 'mismatch'},
   ];
 
@@ -86,29 +89,27 @@ export const Attendence = () : ReactElement => {
     const formData = new FormData();
     formData.append("manualExcel", manualFile);
     formData.append("erpExcel", erpFile);
-
-    const returnType = selected === "all" ? 1 : 0;
-    formData.append("returnType", String(returnType));
-
-    formData.append(
-      "excelPassword",
-      JSON.stringify({
-        erpExcelPassword,
-        manualExcelPassword,
-      })
-    );
+    formData.append("returnType", selected === "all" ? "0" : "1");
+    formData.append("excelPassword", JSON.stringify({ erpExcelPassword, manualExcelPassword }));
 
     try{
       const response = await fetch(
-        "http://localhost:18080/api/validations/only-back-test", 
+        "http://localhost:18080/api/validations", 
         {
           method: "POST",
           body: formData,
         }
       );
 
+      // 다운로드 실패 시
       if(!response.ok) {
-        throw new Error(`응답값 상태 에러: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        const msg = errorData?.message || "처리 중 오류가 발생했습니다";
+        setDownloadTitle("다운로드 실패");
+        setDownloadMessage(msg);
+        setLoadingModal(false);
+        setDownloadModal(true);
+        return;
       }
 
       // 파일로 데이터 받기
@@ -125,31 +126,39 @@ export const Attendence = () : ReactElement => {
 
       setLoadingModal(false);
       setDownloadTitle("다운로드 완료");
+      setDownloadMessage("save폴더에 저장되었습니다.");
       setDownloadModal(true);
     } catch(error) {
       console.log("호출 오류: ", error);
       setLoadingModal(false);
       setDownloadTitle("다운로드 실패");
+      setDownloadMessage("처리 중 오류가 발생했습니다.");
       setDownloadModal(true);
     }
   };
 
+  // 저장 완료 시 save 폴더 열기
+  useEffect(() => {
+    if (window.electron?.onSaveFileSuccess) {
+      window.electron.onSaveFileSuccess((saveDir: string) => {
+        console.log("저장 완료, 폴더 열기:", saveDir);
+        window.electron.openFolder(saveDir);
+      });
+    }
+  }, []);
+
   // 다운로드 파일들 지정 폴더에 관리
   const handleDownload = async (blob: Blob, fileName: string) => {
-    console.log("window.electron?", window.electron);
-    
     const arrayBuffer = await blob.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-  
-    // Electron IPC 호출
     window.electron.saveFile(buffer, fileName);
   };
 
   return (
     <Wrapper>
       <div className='logo'>
-        <SideLogo src='/images/logo/logo_side.svg' alt='사이드 미니 로고'/>
-        <BackLogo src='images/logo/logo_back.svg' alt='백 로고'/>
+        <SideLogo src={`./images/logo/logo_side.svg`} alt='사이드 미니 로고'/>
+        <BackLogo src={`./images/logo/logo_back.svg`} alt='백 로고'/>
       </div>
 
       {/* 전체 컨텐트 영역 감싸기 */}
@@ -179,7 +188,13 @@ export const Attendence = () : ReactElement => {
 
         {/* 모달 */}
         {loadingModal && <LoadingModal />}
-        {downloadModal && <DownloadModal open={downloadModal} onClose={() => setDownloadModal(false)} title={downloadTitle}/>}        
+        {downloadModal && 
+          <DownloadModal 
+            open={downloadModal} 
+            title={downloadTitle} 
+            message={downloadMessage}
+          />
+        }        
         {passwordModal && (
           <PwdModal 
             open={!!passwordModal} 
